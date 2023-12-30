@@ -87,14 +87,18 @@ typedef struct
 
 //Peripheral Definitions
 
+
+//AHB
+#define RCC ((RCC_RegDef_t *) RCC_BASEADDR)
+
 //APB2  port addresses
-#define GPIOA ((GPIO_RegDef * )GPIOA_BASEADDR)
-#define GPIOB ((GPIO_RegDef * )GPIOB_BASEADDR)
-#define GPIOC ((GPIO_RegDef * )GPIOC_BASEADDR)
-#define GPIOC ((GPIO_RegDef * )GPIOC_BASEADDR)
-#define GPIOE ((GPIO_RegDef * )GPIOE_BASEADDR)
-#define GPIOF ((GPIO_RegDef * )GPIOF_BASEADDR)
-#define GPIOG ((GPIO_RegDef * )GPIOG_BASEADDR)
+#define GPIOA ((GPIO_RegDef_t *)GPIOA_BASEADDR)
+#define GPIOB ((GPIO_RegDef_t * )GPIOB_BASEADDR)
+#define GPIOC ((GPIO_RegDef_t * )GPIOC_BASEADDR)
+#define GPIOD ((GPIO_RegDef_t * )GPIOC_BASEADDR)
+#define GPIOE ((GPIO_RegDef_t * )GPIOE_BASEADDR)
+#define GPIOF ((GPIO_RegDef_t * )GPIOF_BASEADDR)
+#define GPIOG ((GPIO_RegDef_t * )GPIOG_BASEADDR)
 
 //Clock Enable and Disable
 #define GPIOA_PCLK_EN()		(RCC->APB2ENR |= (1 << 2))
@@ -104,6 +108,26 @@ typedef struct
 #define GPIOE_PCLK_EN()		(RCC->APB2ENR |= (1 << 6))
 #define GPIOF_PCLK_EN()		(RCC->APB2ENR |= (1 << 7))
 #define GPIOG_PCLK_EN()		(RCC->APB2ENR |= (1 << 8))
+
+
+#define GPIOA_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 2))
+#define GPIOB_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 3))
+#define GPIOC_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 4))
+#define GPIOD_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 5))
+#define GPIOE_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 6))
+#define GPIOF_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 7))
+#define GPIOG_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 8))
+
+
+
+// Conviniences
+#define ENABLE 1
+#define DISABLE  0
+#define SET ENABLE
+#define RESET DISABLE
+#define GPIO_PIN_SET SET
+#define GPIO_PIN_RESET RESET
+
 
 
 
