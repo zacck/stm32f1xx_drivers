@@ -15,7 +15,6 @@ typedef struct
 	uint8_t GPIO_PinDirection;
 	uint8_t GPIO_PinNumber;
 	uint8_t GPIO_PinMode;
-	uint8_t GPIO_PinSpeed;
 	uint8_t GPIO_PuPdControl;
 	uint8_t GPIO_PinOpType;
 	uint8_t GPIO_PinAltFunMode;
@@ -59,14 +58,13 @@ void GPIO_IRQHandling(uint8_t PinNumber);
 #define GPIO_MODE_OUT_PP 	0
 #define GPIO_MODE_OUT_OD 	1
 
-//SPEED MACROS
-#define GPIO_SPEED_LOW 1
-#define GPIO_SPEED_MEDIUM 2
-#define GPIO_SPEED_FAST 3
+//DIRECTION & SPEED MACROS
+#define GPIO_DIR_IN				0
+#define GPIO_DIR_OUT_LOW 		1
+#define GPIO_DIR_OUT_MEDIUM 	2
+#define GPIO_DIR_OUT_FAST 		3
 
-// GPIO DIRECTION TYPES
-#define GPIO_DIRECTION_IN	0
-#define GPIO_DIRECTION_OUT	1
+
 
 
 //pin Number macros
