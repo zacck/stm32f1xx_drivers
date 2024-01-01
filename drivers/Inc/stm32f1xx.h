@@ -129,7 +129,7 @@ typedef struct
 #define GPIO_PIN_RESET RESET
 
 
-
+#include "stm32f103xx_gpio.h"
 
 
 

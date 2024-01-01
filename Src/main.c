@@ -16,14 +16,31 @@
  ******************************************************************************
  */
 
-#include <stdint.h>
+#include "stm32f1xx.h"
 
-#if !defined(__SOFT_FP__) && defined(__ARM_FP)
-  #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
-#endif
 
-int main(void)
-{
-    /* Loop forever */
-	for(;;);
+void delay(void){
+	for(uint32_t i = 0; i < 500000/2; i ++);
+}
+
+int main(void){
+	GPIO_Handle_t  GpioLed;
+
+	// lets make a handler
+	GpioLed.pGPIOx = GPIOC;
+	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
+	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT_PP;
+	GpioLed.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_OUT_MEDIUM;
+
+	//Enable the clock for port D
+	GPIO_PCLK_CTRL(GPIOD, ENABLE);
+	//init the pin with the above handler
+	GPIO_Init(&GpioLed);
+
+	while(1){
+		GPIO_ToggleOutputPin(GPIOD, GPIO_PIN_NO_12);
+		delay();
+	}
+
+	return 0;
 }
