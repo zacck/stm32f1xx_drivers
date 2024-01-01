@@ -40,9 +40,9 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
 	// use CRH or CRL when setting direction and speed
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber < 8) {
-		pGPIOHandle->pGPIOx->CRL = temp_reg_setting;
+		pGPIOHandle->pGPIOx->CRL |= temp_reg_setting;
 	} else {
-		pGPIOHandle->pGPIOx->CRH = temp_reg_setting;
+		pGPIOHandle->pGPIOx->CRH |= temp_reg_setting;
 	}
 
 	temp_reg_setting = 0;
