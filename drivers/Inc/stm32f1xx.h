@@ -50,7 +50,7 @@
 #define UART5_BASEADDR		(APB1PERIPH_BASE + 0x5000)
 
 //AHB Peripherals
-#define RCC_BASEADDR 		(AHBPERIPH_BASE + 0x1000)
+#define RCC_BASEADDR 		(AHBPERIPH_BASE + 0x9000)
 
 //Peripheral Register structs
 
