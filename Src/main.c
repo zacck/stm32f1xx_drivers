@@ -32,13 +32,13 @@ int main(void){
 	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT_PP;
 	GpioLed.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_OUT_MEDIUM;
 
-	//Enable the clock for port D
-	GPIO_PCLK_CTRL(GPIOD, ENABLE);
+	//Enable the clock for port C
+	GPIO_PCLK_CTRL(GPIOC, ENABLE);
 	//init the pin with the above handler
 	GPIO_Init(&GpioLed);
 
 	while(1){
-		GPIO_ToggleOutputPin(GPIOD, GPIO_PIN_NO_12);
+		GPIO_ToggleOutputPin(GPIOC, GPIO_PIN_NO_13);
 		delay();
 	}
 
