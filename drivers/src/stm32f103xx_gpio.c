@@ -29,12 +29,24 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	uint32_t temp_reg_setting = 0;
 
 	// set mode of pin
-	temp_reg_setting = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 + (4 * pin_port_pos)));
+	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IN_PUPD)
+	{
+
+		temp_reg_setting = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 + (4 * pin_port_pos)));
+	} else {
+		// Handle Interrupt modes
+		//1. Set pin to input mode
+		temp_reg_setting = (GPIO_MODE_IN_FP << (2 + (4 * pin_port_pos)));
+		//2.handle rising interrupt
+		//3.handle falling intterrupt
+		//4.handle rising and falling interrupt
+
+	}
 
 
 	// set direction and speed of pin
 	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection > GPIO_DIR_IN){
-	temp_reg_setting = (pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection
+	temp_reg_setting |= (pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection
 			<< (4 * pin_port_pos));
 	}
 
