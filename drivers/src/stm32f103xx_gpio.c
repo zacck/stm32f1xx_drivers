@@ -29,25 +29,40 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	uint32_t temp_reg_setting = 0;
 
 	// set mode of pin
-	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IN_PUPD)
-	{
+	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IN_PUPD) {
 
-		temp_reg_setting = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 + (4 * pin_port_pos)));
+		temp_reg_setting = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode
+				<< (2 + (4 * pin_port_pos)));
 	} else {
-		// Handle Interrupt modes
 		//1. Set pin to input mode
 		temp_reg_setting = (GPIO_MODE_IN_FP << (2 + (4 * pin_port_pos)));
-		//2.handle rising interrupt
-		//3.handle falling intterrupt
 		//4.handle rising and falling interrupt
+		if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT) {
+			//handle falling intterrupt
+			//set FTSR and reset RTSR
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->RTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		} else if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT) {
+			//handle rising interrupt
+			//set RTSR and reset FTSR
+			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->FTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+
+		} else if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RFT) {
+			// Handle Interrupt modes
+			//set RTSR and FTSR
+			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		}
+
+		// Handle MCU specific config for interrupts
 
 	}
 
-
 	// set direction and speed of pin
-	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection > GPIO_DIR_IN){
-	temp_reg_setting |= (pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection
-			<< (4 * pin_port_pos));
+	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection > GPIO_DIR_IN) {
+		temp_reg_setting |= (pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection
+				<< (4 * pin_port_pos));
 	}
 
 	// use CRH or CRL when setting direction and speed
@@ -59,25 +74,23 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
 	temp_reg_setting = 0;
 
-
-
 }
 void GPIO_DeInit(GPIO_RegDef_t *pGPIOx) {
 	if (pGPIOx == GPIOA) {
-			GPIOA_REG_RESET();
-		} else if (pGPIOx == GPIOB) {
-			GPIOB_REG_RESET();
-		} else if (pGPIOx == GPIOC) {
-			GPIOC_REG_RESET();
-		} else if (pGPIOx == GPIOD) {
-			GPIOD_REG_RESET();
-		} else if (pGPIOx == GPIOE) {
-			GPIOE_REG_RESET();
-		} else if (pGPIOx == GPIOF) {
-			GPIOF_REG_RESET();
-		} else if (pGPIOx == GPIOG) {
-			GPIOG_REG_RESET();
-		}
+		GPIOA_REG_RESET();
+	} else if (pGPIOx == GPIOB) {
+		GPIOB_REG_RESET();
+	} else if (pGPIOx == GPIOC) {
+		GPIOC_REG_RESET();
+	} else if (pGPIOx == GPIOD) {
+		GPIOD_REG_RESET();
+	} else if (pGPIOx == GPIOE) {
+		GPIOE_REG_RESET();
+	} else if (pGPIOx == GPIOF) {
+		GPIOF_REG_RESET();
+	} else if (pGPIOx == GPIOG) {
+		GPIOG_REG_RESET();
+	}
 }
 
 /******
@@ -151,9 +164,9 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber,
 		uint8_t Value) {
 
 	//based on set and reset macros
-	if(Value == GPIO_PIN_SET){
+	if (Value == GPIO_PIN_SET) {
 		pGPIOx->ODR |= (1 << PinNumber);
-	}else{
+	} else {
 		pGPIOx->ODR &= ~(1 << PinNumber);
 
 	}
@@ -186,7 +199,7 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value) {
  *  */
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber) {
 	//use XOR to toggle bitfield
-		pGPIOx->ODR = pGPIOx ->ODR ^ (1 << PinNumber);
+	pGPIOx->ODR = pGPIOx->ODR ^ (1 << PinNumber);
 
 }
 
