@@ -85,6 +85,18 @@ typedef struct
 }RCC_RegDef_t;
 
 
+//EXTI
+typedef struct
+{
+	__vo uint32_t IMR;
+	__vo uint32_t EMR;
+	__vo uint32_t RTSR;
+	__vo uint32_t FTSR;
+	__vo uint32_t SWIER;
+	__vo uint32_t PR;
+}EXTI_RegDef_t;
+
+
 //Peripheral Definitions
 
 
@@ -99,6 +111,7 @@ typedef struct
 #define GPIOE ((GPIO_RegDef_t * )GPIOE_BASEADDR)
 #define GPIOF ((GPIO_RegDef_t * )GPIOF_BASEADDR)
 #define GPIOG ((GPIO_RegDef_t * )GPIOG_BASEADDR)
+#define EXTI  ((EXTI_RegDef_t *	)EXTI_BASEADDR)
 
 //Clock Enable and Disable
 #define GPIOA_PCLK_EN()		(RCC->APB2ENR |= (1 << 2))

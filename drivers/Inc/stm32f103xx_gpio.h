@@ -53,6 +53,9 @@ void GPIO_IRQHandling(uint8_t PinNumber);
 #define GPIO_MODE_IN_AN 	0
 #define GPIO_MODE_IN_FP 	1
 #define GPIO_MODE_IN_PUPD	2
+#define GPIO_MODE_IT_FT  	3
+#define GPIO_MODE_IT_RT  	4
+#define GPIO_MODE_IT_RFT  	5
 
 // GPIO OUTPUT TYPES MACROS
 #define GPIO_MODE_OUT_PP 	0
