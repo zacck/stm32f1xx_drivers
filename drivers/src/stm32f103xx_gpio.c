@@ -27,6 +27,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	}
 
 	uint32_t temp_reg_setting = 0;
+	uint32_t temp_reg_1, temp_reg_2;
 
 	// set mode of pin
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IN_PUPD) {
@@ -58,6 +59,20 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 		// Handle MCU specific config for interrupts
 
 	}
+
+	// Handle Alternate function mode, we will need this for interrupts
+	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN) {
+			//get index for AFR to use
+			temp_reg_1 = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber / 8);
+			// get register to use
+			temp_reg_2 = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber % 8);
+			pGPIOHandle->pGPIOx->AFR[temp_reg_1] &= (0XF << (4 * temp_reg_2));
+
+			pGPIOHandle->pGPIOx->AFR[temp_reg_1] |= (pGPIOHandle ->GPIO_PinConfig.GPIO_PinAltFunMode << (4 * temp_reg_2));
+
+
+		}
+
 
 	// set direction and speed of pin
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinDirection > GPIO_DIR_IN) {
