@@ -36,6 +36,7 @@
 #define SPI1_BASEADDR		(APB2PERIPH_BASE + 0x3000)
 #define USART1_BASEADDR		(APB2PERIPH_BASE + 0x3800)
 #define EXTI_BASEADDR		(APB2PERIPH_BASE + 0x0400)
+#define AFIO_BASEADDR		(APB2PERIPH_BASE + 0x0000)
 
 
 
@@ -97,6 +98,15 @@ typedef struct
 }EXTI_RegDef_t;
 
 
+//AFIO
+typedef struct
+{
+	__vo  uint32_t EVCR;
+	__vo  uint32_t MAPR;
+	__vo  uint32_t EXTICR[4];
+}AFIO_RegDef_t;
+
+
 //Peripheral Definitions
 
 
@@ -112,6 +122,7 @@ typedef struct
 #define GPIOF ((GPIO_RegDef_t * )GPIOF_BASEADDR)
 #define GPIOG ((GPIO_RegDef_t * )GPIOG_BASEADDR)
 #define EXTI  ((EXTI_RegDef_t *	)EXTI_BASEADDR)
+#define AFIO  ((AFIO_RegDef_t * )AFIO_BASEADDR)
 
 //Clock Enable and Disable
 #define GPIOA_PCLK_EN()		(RCC->APB2ENR |= (1 << 2))

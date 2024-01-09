@@ -27,7 +27,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	}
 
 	uint32_t temp_reg_setting = 0;
-	uint32_t temp_reg_1, temp_reg_2;
+	uint8_t afio_exti_cr_index;
 
 	// set mode of pin
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IN_PUPD) {
@@ -35,6 +35,33 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 		temp_reg_setting = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode
 				<< (2 + (4 * pin_port_pos)));
 	} else {
+		// Enable clock for altfunction IO
+		RCC->APB2ENR |= (1 << 0);
+		// enable the interrupt for pin and port
+		afio_exti_cr_index = (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4);
+
+		if (pGPIOHandle->pGPIOx == GPIOA) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (0 << 0);
+
+		} else if (pGPIOHandle->pGPIOx == GPIOB) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (1 << 0);
+
+		} else if (pGPIOHandle->pGPIOx == GPIOC) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (2 << 0);
+
+		} else if (pGPIOHandle->pGPIOx == GPIOD) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (3 << 0);
+
+		} else if (pGPIOHandle->pGPIOx == GPIOE) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (4 << 0);
+
+		} else if (pGPIOHandle->pGPIOx == GPIOF) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (5 << 0);
+
+		} else if (pGPIOHandle->pGPIOx == GPIOB) {
+			AFIO->EXTICR[afio_exti_cr_index] |= (6 << 0);
+
+		}
 		//1. Set pin to input mode
 		temp_reg_setting = (GPIO_MODE_IN_FP << (2 + (4 * pin_port_pos)));
 		//4.handle rising and falling interrupt
@@ -62,16 +89,10 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
 	// Handle Alternate function mode, we will need this for interrupts
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN) {
-			//get index for AFR to use
-			temp_reg_1 = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber / 8);
-			// get register to use
-			temp_reg_2 = (pGPIOHandle -> GPIO_PinConfig.GPIO_PinNumber % 8);
-			pGPIOHandle->pGPIOx->AFR[temp_reg_1] &= (0XF << (4 * temp_reg_2));
-
-			pGPIOHandle->pGPIOx->AFR[temp_reg_1] |= (pGPIOHandle ->GPIO_PinConfig.GPIO_PinAltFunMode << (4 * temp_reg_2));
+		//TODO
 
 
-		}
+	}
 
 
 	// set direction and speed of pin
