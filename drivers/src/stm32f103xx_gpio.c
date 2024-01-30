@@ -27,7 +27,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	}
 
 	uint32_t temp_reg_setting = 0;
-	uint8_t afio_exti_cr_index;
+	uint8_t afio_exti_cr_index, afio_exti_cr_pos;
 
 	// set mode of pin
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_IN_PUPD) {
@@ -39,27 +39,28 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 		AFIO_PCLK_EN();
 		// enable the interrupt for pin and port
 		afio_exti_cr_index = (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4);
+		afio_exti_cr_pos = ((pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4) * 4);
 
 		if (pGPIOHandle->pGPIOx == GPIOA) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (0 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (0 << afio_exti_cr_pos);
 
 		} else if (pGPIOHandle->pGPIOx == GPIOB) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (1 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (1 << afio_exti_cr_pos);
 
 		} else if (pGPIOHandle->pGPIOx == GPIOC) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (2 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (2 << afio_exti_cr_pos);
 
 		} else if (pGPIOHandle->pGPIOx == GPIOD) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (3 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (3 << afio_exti_cr_pos);
 
 		} else if (pGPIOHandle->pGPIOx == GPIOE) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (4 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (4 << afio_exti_cr_pos);
 
 		} else if (pGPIOHandle->pGPIOx == GPIOF) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (5 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (5 << afio_exti_cr_pos);
 
 		} else if (pGPIOHandle->pGPIOx == GPIOB) {
-			AFIO->EXTICR[afio_exti_cr_index] |= (6 << 0);
+			AFIO->EXTICR[afio_exti_cr_index] |= (6 << afio_exti_cr_pos);
 
 		}
 		//1. Set pin to input mode
