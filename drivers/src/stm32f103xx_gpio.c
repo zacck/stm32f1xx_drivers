@@ -36,7 +36,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 				<< (2 + (4 * pin_port_pos)));
 	} else {
 		// Enable clock for altfunction IO
-		RCC->APB2ENR |= (1 << 0);
+		AFIO_PCLK_EN();
 		// enable the interrupt for pin and port
 		afio_exti_cr_index = (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4);
 

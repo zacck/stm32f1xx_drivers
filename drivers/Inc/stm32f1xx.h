@@ -149,6 +149,7 @@ typedef struct
 #define AFIO  ((AFIO_RegDef_t * )AFIO_BASEADDR)
 
 //Clock Enable and Disable
+#define AFIO_PCLK_EN()		(RCC->APB2ENR |= (1 << 0))
 #define GPIOA_PCLK_EN()		(RCC->APB2ENR |= (1 << 2))
 #define GPIOB_PCLK_EN()		(RCC->APB2ENR |= (1 << 3))
 #define GPIOC_PCLK_EN()		(RCC->APB2ENR |= (1 << 4))
@@ -157,7 +158,7 @@ typedef struct
 #define GPIOF_PCLK_EN()		(RCC->APB2ENR |= (1 << 7))
 #define GPIOG_PCLK_EN()		(RCC->APB2ENR |= (1 << 8))
 
-
+#define AFIO_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 0))
 #define GPIOA_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 2))
 #define GPIOB_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 3))
 #define GPIOC_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 4))
