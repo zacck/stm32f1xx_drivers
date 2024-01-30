@@ -15,6 +15,7 @@
 
 /**************** Processor specific details *********/
 //Arm Cortex MX processor NVIC ISERx register addresses
+//Set/Enable Interrupts
 
 #define NVIC_ISER0			((__vo uint32_t *)0xE000E100)
 #define NVIC_ISER1			((__vo uint32_t *)0xE000E104)
@@ -22,12 +23,13 @@
 #define NVIC_ISER3			((__vo uint32_t *)0xE000E10C)
 
 //Arm Cortex MX processor NVIC ICERx register addresses
+//Clear/Disable interrupts
 #define NVIC_ICER0			((__vo uint32_t *)0XE000E180)
 #define NVIC_ICER1			((__vo uint32_t *)0XE000E184)
 #define NVIC_ICER2			((__vo uint32_t *)0XE000E188)
 #define NVIC_ICER3			((__vo uint32_t *)0XE000E18C)
 
-
+// NVIC Priority base address
 #define NVIC_PR_BASEADDR	((__vo uint32_t *)0xE000E400)
 #define NO_PR_BITS_IMPLEMENTED 4
 
@@ -177,6 +179,15 @@ typedef struct
 #define GPIOF_REG_RESET()	do {(RCC->APB2RSTR |= (1 << 7)); (RCC->APB2RSTR &= ~(1 << 7));} while (0)
 #define GPIOG_REG_RESET()	do {(RCC->APB2RSTR |= (1 << 8)); (RCC->APB2RSTR &= ~(1 << 8));} while (0)
 
+
+// IRQ Numbers
+#define IRQ_NO_EXTI0			6
+#define IRQ_NO_EXTI1			7
+#define IRQ_NO_EXTI2			8
+#define IRQ_NO_EXTI3			9
+#define IRQ_NO_EXTI4			10
+#define IRQ_NO_EXTI9_5			23
+#define IRQ_NO_EXTI15_10		40
 
 
 // Conviniences
