@@ -85,6 +85,9 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
 		// Handle MCU specific config for interrupts
 
+		//Unmask Interrupt using IMR register
+		EXTI->IMR |= (1 <<pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+
 	}
 
 	// Handle Alternate function mode, we will need this for interrupts
@@ -278,7 +281,7 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi) {
 	}
 }
 /******
- * @fn GPIO_IRQConfig
+ * @fn GPIO_IRQPriorityConfig
  *
  * @brief Flips the value at a given output pin
  *
