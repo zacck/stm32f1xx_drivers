@@ -114,6 +114,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
 	temp_reg_setting = 0;
 
+
 }
 void GPIO_DeInit(GPIO_RegDef_t *pGPIOx) {
 	if (pGPIOx == GPIOA) {
