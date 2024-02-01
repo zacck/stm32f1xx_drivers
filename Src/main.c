@@ -24,7 +24,7 @@ void delay(void){
 }
 
 int main(void){
-	GPIO_Handle_t  GpioLed;
+	GPIO_Handle_t  GpioLed,GpioButton;
 
 	// lets make a handler
 	GpioLed.pGPIOx = GPIOC;
@@ -32,15 +32,30 @@ int main(void){
 	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT_PP;
 	GpioLed.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_OUT_MEDIUM;
 
+	// lets make a handler
+	GpioButton.pGPIOx = GPIOB;
+	GpioButton.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
+	GpioButton.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_FT;
+	GpioButton.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_IN;
+
 	//Enable the clock for port C
 	GPIO_PCLK_CTRL(GPIOC, ENABLE);
+	GPIO_PCLK_CTRL(GPIOD, ENABLE);
 	//init the pin with the above handler
 	GPIO_Init(&GpioLed);
+	GPIO_Init(&GpioButton);
+	GPIO_IRQPriorityConfig(IRQ_NO_EXTI9_5, NVIC_IRQ_PRIO15);
+	GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
 
-	while(1){
-		GPIO_ToggleOutputPin(GPIOC, GPIO_PIN_NO_13);
-		delay();
-	}
 
-	return 0;
+	while(1);
+
+
+}
+
+void EXTI9_5_IRQHandler (void) {
+	//invoke irq handler
+	GPIO_IRQHandling(GPIO_PIN_NO_5);
+	GPIO_ToggleOutputPin(GPIOC, GPIO_PIN_NO_13);
+	delay();
 }
