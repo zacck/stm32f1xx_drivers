@@ -44,8 +44,9 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t value);
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
 
 //IRQ config and ISR handling
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
+void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void GPIO_IRQHandling(uint8_t PinNumber);
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority);
 
 
 // MACROS
@@ -53,6 +54,10 @@ void GPIO_IRQHandling(uint8_t PinNumber);
 #define GPIO_MODE_IN_AN 	0
 #define GPIO_MODE_IN_FP 	1
 #define GPIO_MODE_IN_PUPD	2
+#define GPIO_MODE_ALTFN		3
+#define GPIO_MODE_IT_FT  	4
+#define GPIO_MODE_IT_RT  	5
+#define GPIO_MODE_IT_RFT  	6
 
 // GPIO OUTPUT TYPES MACROS
 #define GPIO_MODE_OUT_PP 	0

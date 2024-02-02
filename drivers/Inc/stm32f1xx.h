@@ -12,6 +12,34 @@
 
 #define __vo volatile
 
+
+/**************** Processor specific details *********/
+//Arm Cortex MX processor NVIC ISERx register addresses
+//Set/Enable Interrupts
+
+#define NVIC_ISER0			((__vo uint32_t *)0xE000E100)
+#define NVIC_ISER1			((__vo uint32_t *)0xE000E104)
+#define NVIC_ISER2			((__vo uint32_t *)0xE000E108)
+#define NVIC_ISER3			((__vo uint32_t *)0xE000E10C)
+
+//Arm Cortex MX processor NVIC ICERx register addresses
+//Clear/Disable interrupts
+#define NVIC_ICER0			((__vo uint32_t *)0XE000E180)
+#define NVIC_ICER1			((__vo uint32_t *)0XE000E184)
+#define NVIC_ICER2			((__vo uint32_t *)0XE000E188)
+#define NVIC_ICER3			((__vo uint32_t *)0XE000E18C)
+
+// NVIC Priority base address
+#define NVIC_PR_BASEADDR	((__vo uint32_t *)0xE000E400)
+#define NO_PR_BITS_IMPLEMENTED 4
+
+
+
+
+
+
+/****************** End Processor ********************/
+
 #define FLASH_BASEADDR		0x08000000U
 #define SRAM_BASEADDR		0x20000000U
 #define ROM_BASEADDR		0x1FFFF000U
@@ -36,6 +64,7 @@
 #define SPI1_BASEADDR		(APB2PERIPH_BASE + 0x3000)
 #define USART1_BASEADDR		(APB2PERIPH_BASE + 0x3800)
 #define EXTI_BASEADDR		(APB2PERIPH_BASE + 0x0400)
+#define AFIO_BASEADDR		(APB2PERIPH_BASE + 0x0000)
 
 
 
@@ -85,6 +114,27 @@ typedef struct
 }RCC_RegDef_t;
 
 
+//EXTI
+typedef struct
+{
+	__vo uint32_t IMR;
+	__vo uint32_t EMR;
+	__vo uint32_t RTSR;
+	__vo uint32_t FTSR;
+	__vo uint32_t SWIER;
+	__vo uint32_t PR;
+}EXTI_RegDef_t;
+
+
+//AFIO
+typedef struct
+{
+	__vo  uint32_t EVCR;
+	__vo  uint32_t MAPR;
+	__vo  uint32_t EXTICR[4];
+}AFIO_RegDef_t;
+
+
 //Peripheral Definitions
 
 
@@ -99,8 +149,11 @@ typedef struct
 #define GPIOE ((GPIO_RegDef_t * )GPIOE_BASEADDR)
 #define GPIOF ((GPIO_RegDef_t * )GPIOF_BASEADDR)
 #define GPIOG ((GPIO_RegDef_t * )GPIOG_BASEADDR)
+#define EXTI  ((EXTI_RegDef_t *	)EXTI_BASEADDR)
+#define AFIO  ((AFIO_RegDef_t * )AFIO_BASEADDR)
 
 //Clock Enable and Disable
+#define AFIO_PCLK_EN()		(RCC->APB2ENR |= (1 << 0))
 #define GPIOA_PCLK_EN()		(RCC->APB2ENR |= (1 << 2))
 #define GPIOB_PCLK_EN()		(RCC->APB2ENR |= (1 << 3))
 #define GPIOC_PCLK_EN()		(RCC->APB2ENR |= (1 << 4))
@@ -109,7 +162,7 @@ typedef struct
 #define GPIOF_PCLK_EN()		(RCC->APB2ENR |= (1 << 7))
 #define GPIOG_PCLK_EN()		(RCC->APB2ENR |= (1 << 8))
 
-
+#define AFIO_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 0))
 #define GPIOA_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 2))
 #define GPIOB_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 3))
 #define GPIOC_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 4))
@@ -128,6 +181,33 @@ typedef struct
 #define GPIOF_REG_RESET()	do {(RCC->APB2RSTR |= (1 << 7)); (RCC->APB2RSTR &= ~(1 << 7));} while (0)
 #define GPIOG_REG_RESET()	do {(RCC->APB2RSTR |= (1 << 8)); (RCC->APB2RSTR &= ~(1 << 8));} while (0)
 
+
+// IRQ Numbers
+#define IRQ_NO_EXTI0			6
+#define IRQ_NO_EXTI1			7
+#define IRQ_NO_EXTI2			8
+#define IRQ_NO_EXTI3			9
+#define IRQ_NO_EXTI4			10
+#define IRQ_NO_EXTI9_5			23
+#define IRQ_NO_EXTI15_10		40
+
+//IRQ Priorities
+#define NVIC_IRQ_PRIO0		0
+#define NVIC_IRQ_PRIO1		1
+#define NVIC_IRQ_PRIO2		2
+#define NVIC_IRQ_PRIO3		3
+#define NVIC_IRQ_PRIO4		4
+#define NVIC_IRQ_PRIO5		5
+#define NVIC_IRQ_PRIO6		6
+#define NVIC_IRQ_PRIO7		7
+#define NVIC_IRQ_PRIO8		8
+#define NVIC_IRQ_PRIO9		9
+#define NVIC_IRQ_PRIO10		10
+#define NVIC_IRQ_PRIO11		11
+#define NVIC_IRQ_PRIO12		12
+#define NVIC_IRQ_PRIO13		13
+#define NVIC_IRQ_PRIO14		14
+#define NVIC_IRQ_PRIO15		15
 
 
 // Conviniences
