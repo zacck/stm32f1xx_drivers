@@ -135,6 +135,21 @@ typedef struct
 }AFIO_RegDef_t;
 
 
+// SPI
+typedef struct
+{
+	__vo uint32_t CR1;
+	__vo uint32_t CR2;
+	__vo uint32_t SR;
+	__vo uint32_t DR;
+	__vo uint32_t CRCPR;
+	__vo uint32_t RXCRCR;
+	__vo uint32_t TXCRCR;
+	__vo uint32_t I2SCFGR;
+	__vo uint32_t I2SPR;
+}SPI_RegDef_t;
+
+
 //Peripheral Definitions
 
 
@@ -151,6 +166,9 @@ typedef struct
 #define GPIOG ((GPIO_RegDef_t * )GPIOG_BASEADDR)
 #define EXTI  ((EXTI_RegDef_t *	)EXTI_BASEADDR)
 #define AFIO  ((AFIO_RegDef_t * )AFIO_BASEADDR)
+#define SPI1  ((SPI_RegDef_t *) SPI1_BASEADDR)
+#define SPI2  ((SPI_RegDef_t *) SPI2_BASEADDR)
+#define SPI3  ((SPI_RegDef_t *) SPI3_BASEADDR)
 
 //Clock Enable and Disable
 #define AFIO_PCLK_EN()		(RCC->APB2ENR |= (1 << 0))
@@ -190,6 +208,9 @@ typedef struct
 #define IRQ_NO_EXTI4			10
 #define IRQ_NO_EXTI9_5			23
 #define IRQ_NO_EXTI15_10		40
+#define IRQ_NO_SPI1				35
+#define IRQ_NO_SPI2				36
+#define IRQ_NO_SPI3				51
 
 //IRQ Priorities
 #define NVIC_IRQ_PRIO0		0
