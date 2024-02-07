@@ -32,6 +32,45 @@ typedef struct
 }SPI_Handle_t;
 
 
+// Device Modes
+#define SPI_DEVICE_MODE_MASTER	1;
+#define SPI_DEVICE_MODE_SLAVE	0;
+
+//Bus MODES
+#define SPI_BUS_CONFIG_FD				1
+#define SPI_BUS_CONFIG_HD				2
+#define SPI_BUS_CONFIG_SIMPLEX_RXONLY	3
+
+
+// SPI CLOCK SPEED
+#define SPI_SCLK_SPEED_DIV2					0
+#define SPI_SCLK_SPEED_DIV4					1
+#define SPI_SCLK_SPEED_DIV8					2
+#define SPI_SCLK_SPEED_DIV16				3
+#define SPI_SCLK_SPEED_DIV32				4
+#define SPI_SCLK_SPEED_DIV64				5
+#define SPI_SCLK_SPEED_DIV128				6
+#define SPI_SCLK_SPEED_DIV256				7
+
+
+//SPI DFF
+#define SPI_DFF_8BITS 	0
+#define SPI_DFF_16BITS 	1
+
+//SPI POLARITY
+#define SPI_CPOL_HIGH	0
+#define SPI_CPOL_LOW	1
+
+//SPI PHASES
+#define SPI_CPHA_HIGH	0
+#define SPI_CPHA_LOW	1
+
+
+//SPI SLAVE MANAGEMENT
+#define SPI_SSM_EN		1
+#define SPI_SSM_DI		0
+
+
 // Init and DeInit APIs
 void SPI_Init(SPI_Handle_t *pSPIHandle);
 void SPI_DeInit(SPI_RegDef_t *pSPIx);
