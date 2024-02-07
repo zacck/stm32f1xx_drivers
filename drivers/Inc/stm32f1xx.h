@@ -179,6 +179,9 @@ typedef struct
 #define GPIOE_PCLK_EN()		(RCC->APB2ENR |= (1 << 6))
 #define GPIOF_PCLK_EN()		(RCC->APB2ENR |= (1 << 7))
 #define GPIOG_PCLK_EN()		(RCC->APB2ENR |= (1 << 8))
+#define SPI1_PCLK_EN()		(RCC->APB2ENR |= (1 << 12))
+#define SPI2_PCLK_EN()		(RCC->APB1ENR |= (1 << 14))
+#define SPI3_PCLK_EN()		(RCC->APB1ENR |= (1 << 15))
 
 #define AFIO_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 0))
 #define GPIOA_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 2))
@@ -188,6 +191,9 @@ typedef struct
 #define GPIOE_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 6))
 #define GPIOF_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 7))
 #define GPIOG_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 8))
+#define SPI1_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 12))
+#define SPI2_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 14))
+#define SPI3_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 15))
 
 
 // GPIO REGISTER RESET MACROS
@@ -199,6 +205,11 @@ typedef struct
 #define GPIOF_REG_RESET()	do {(RCC->APB2RSTR |= (1 << 7)); (RCC->APB2RSTR &= ~(1 << 7));} while (0)
 #define GPIOG_REG_RESET()	do {(RCC->APB2RSTR |= (1 << 8)); (RCC->APB2RSTR &= ~(1 << 8));} while (0)
 
+
+// SPI REGISTER RESET MACROS
+#define SPI1_REG_RESET() 	do {(RCC->APB2RSTR |=  (1 << 12)); (RCC->APB2RSTR &= ~(1 << 12));} while (0)
+#define SPI2_REG_RESET()	do {(RCC->APB1RSTR |=  (1 << 14)); (RCC->APB1RSTR &= ~(1 << 14));} while (0)
+#define SPI3_REG_RESET()	do {(RCC->APB1RSTR |=  (1 << 15)); (RCC->APB1RSTR &= ~(1 << 15));} while (0)
 
 // IRQ Numbers
 #define IRQ_NO_EXTI0			6
