@@ -112,6 +112,43 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx) {
 	}
 }
 
+/***
+ * @fn SPI_SendData
+ *
+ *
+ * @brief Blocking API for sending data over SPI, this waits until transfer is complete
+ *
+ * @params[pSPIx] perioheral to use
+ * @params[pTxBuffer] Outbound Data Buffer
+ * @params[Len] Length of the data we want to send
+ *
+ * @return void
+ */
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
+	while(Len > 0) {
+		//wait for TXE to be set
+		while (SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) ==(uint8_t)FLAG_RESET);
+	}
+
+}
+
+
+/***
+ * @fn SPI_GetFlagStatus
+ *
+ * @params[pSPIx] the address of the peripheral in use
+ * @params[FlagName] the name of the flag whose status we want
+ *
+ * @return 8 bit integer
+ */
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName){
+	if(pSPIx->SR & FlagName){
+		return FLAG_SET;
+	}
+
+	return FLAG_RESET;
+}
+
 
 
 
