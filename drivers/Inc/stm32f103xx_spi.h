@@ -1,5 +1,5 @@
 /*
- * stm32f1xx_spi.h
+ * stm32f103xx_spi.h
  *
  *  Created on: Feb 5, 2024
  *      Author: zaccko
@@ -19,6 +19,7 @@ typedef struct
 	uint8_t SPI_CPOL;
 	uint8_t SPI_CPHA;
 	uint8_t SPI_SSM;
+	uint8_t SPI_LSBFIRST;
 
 }SPI_Config_t;
 
