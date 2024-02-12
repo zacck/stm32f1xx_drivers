@@ -18,6 +18,9 @@
  * @note
  *  */
 void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
+	//ENable clock when initilizing peripherals
+	GPIO_PCLK_CTRL(pGPIOHandle->pGPIOx, ENABLE);
+
 	//pin port position
 	uint8_t pin_port_pos;
 	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber < 8) {

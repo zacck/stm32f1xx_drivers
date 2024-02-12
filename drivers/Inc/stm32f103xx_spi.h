@@ -94,8 +94,13 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
 #define SPI_TXE_FLAG 	(1 << SPI_SR_TXE)
 #define SPI_RXNE_FLAG 	(1 << SPI_SR_RXNE)
 #define SPI_BUSY_FLAG 	(1 << SPI_SR_BSY)
-
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName);
+
+// MISc APIs
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
+
+
 
 
 

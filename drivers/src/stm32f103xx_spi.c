@@ -49,6 +49,9 @@ void SPI_PCLK_CTRL(SPI_RegDef_t *pSPIx, uint8_t EnorDi) {
  * @return void
  */
 void SPI_Init(SPI_Handle_t *pSPIHandle){
+	//Enable Peripheral clock for SPI peripheral
+	SPI_PCLK_CTRL(pSPIHandle->pSPIx, ENABLE);
+
 	uint32_t temp_cr1_reg = 0;
 
 	//device mode
@@ -128,6 +131,23 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
 	while(Len > 0) {
 		//wait for TXE to be set
 		while (SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) ==(uint8_t)FLAG_RESET);
+
+
+		//check DFF
+		if((pSPIx->CR1 && (1  << SPI_CR1_DFF))){
+			//16bit DFF
+			pSPIx->DR =* ((uint16_t*)pTxBuffer);
+			//Decrease len twice since we picked 2 words
+			Len--;
+			Len--;
+			//increment data pointer location
+			(uint16_t*)pTxBuffer++;
+		} else {
+			// 8 bit frame format
+			pSPIx->DR = *pTxBuffer;
+			Len--;
+			pTxBuffer++;
+		}
 	}
 
 }
@@ -147,6 +167,37 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName){
 	}
 
 	return FLAG_RESET;
+}
+
+
+/***
+ * @fn SPI_Peripheral control
+ *
+ * @params[pSPIx] the address of the peripheral in use
+ * @params[EnorDi] enable or disable param
+ * @return void
+ */
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi){
+	if(EnorDi == ENABLE){
+		pSPIx->CR1 |= (1 << SPI_CR1_SPE);
+	} else {
+		pSPIx->CR1 &= ~(1 << SPI_CR1_SPE);
+	}
+}
+
+/***
+ * @fn SPI_SSIConfig
+ *
+ * @params[pSPIx] the address of the peripheral in use
+ * @params[EnorDi] enable or disable param
+ * @return void
+ */
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi){
+	if(EnorDi == ENABLE){
+			pSPIx->CR1 |= (1 << SPI_CR1_SSI);
+		} else {
+			pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
+		}
 }
 
 
