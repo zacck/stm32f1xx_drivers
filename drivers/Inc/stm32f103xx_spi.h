@@ -90,6 +90,13 @@ void SPI_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority);
 void SPI_IRQHandling(SPI_Handle_t *pHandle);
 
+// SPI Flags
+#define SPI_TXE_FLAG 	(1 << SPI_SR_TXE)
+#define SPI_RXNE_FLAG 	(1 << SPI_SR_RXNE)
+#define SPI_BUSY_FLAG 	(1 << SPI_SR_BSY)
+
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName);
+
 
 
 #endif /* INC_STM32F103XX_SPI_H_ */
