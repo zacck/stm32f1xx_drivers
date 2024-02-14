@@ -137,7 +137,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
 		if((pSPIx->CR1 && (1  << SPI_CR1_DFF))){
 			//16bit DFF
 			pSPIx->DR =* ((uint16_t*)pTxBuffer);
-			//Decrease len twice since we picked 2 words
+			//Decrease len twice since we picked a half word(2 bytes)
 			Len--;
 			Len--;
 			//increment data pointer location
@@ -147,6 +147,40 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
 			pSPIx->DR = *pTxBuffer;
 			Len--;
 			pTxBuffer++;
+		}
+	}
+
+}
+
+/****
+ * Blocking API to receive data via SPI
+ * @fn SPI_ReceiveData
+ *
+ * @params[pSPIx] the base address of the peripheral we are using
+ * @params[pRxBuffer] the buffer to hold the data we receive
+ * @params[Len] the number of bytes of data that we intend to receive
+ *
+ *
+ * @return void
+ */
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len){
+	while(Len > 0){
+		//wait for RXNE
+		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == (uint8_t)FLAG_RESET);
+
+		//check DFF
+		if(pSPIx->CR1 & (1 << SPI_CR1_DFF)) {
+			//16 bit
+			*((uint16_t *) pRxBuffer) = pSPIx->DR;
+			//dec lenght
+			Len--;
+			Len--;
+			(uint16_t*) pRxBuffer++;
+		} else {
+			// 8 bit DFF
+			*(pRxBuffer) = pSPIx->DR;
+			Len--;
+			pRxBuffer++;
 		}
 	}
 
