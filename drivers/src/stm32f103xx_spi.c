@@ -91,6 +91,9 @@ void SPI_Init(SPI_Handle_t *pSPIHandle){
 	//configure LSBFIRST
 	temp_cr1_reg |= pSPIHandle->SPIConfig.SPI_LSBFIRST << SPI_CR1_LSBFIRST;
 
+	//configure DFF 
+	temp_cr1_reg |= pSPIHandle->SPIConfig.SPI_DFF << SPI_CR1_DFF;
+
 	pSPIHandle->pSPIx->CR1 = temp_cr1_reg;
 
 }
