@@ -59,12 +59,12 @@ typedef struct
 #define SPI_DFF_16BITS 	1
 
 //SPI POLARITY
-#define SPI_CPOL_HIGH	0
-#define SPI_CPOL_LOW	1
+#define SPI_CPOL_HIGH	1
+#define SPI_CPOL_LOW	0
 
 //SPI PHASES
-#define SPI_CPHA_HIGH	0
-#define SPI_CPHA_LOW	1
+#define SPI_CPHA_HIGH	1
+#define SPI_CPHA_LOW	0
 
 
 //SPI SLAVE MANAGEMENT
