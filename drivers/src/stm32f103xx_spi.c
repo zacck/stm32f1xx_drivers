@@ -5,7 +5,7 @@
  *      Author: zaccko
  */
 
-#include "stm32f103xx_gpio.h"
+#include "stm32f1xx.h"
 
 
 static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle);

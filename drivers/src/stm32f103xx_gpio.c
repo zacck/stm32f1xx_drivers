@@ -5,7 +5,7 @@
  *      Author: zaccko
  */
 
-#include "stm32f103xx_gpio.h"
+#include "stm32f1xx.h"
 
 /******
  * @fn GPIO_INITL
