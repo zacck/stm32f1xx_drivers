@@ -77,7 +77,7 @@ int main(void){
 	//Init SPI2
 	SPI_GPIOINITS();
 	SPI2_Init();
-	SPI_SSIConfig(SPI2, ENABLE);
+	SPI_PeripheralControl(SPI2, ENABLE);
 
 	GPIO_Handle_t  GpioLed,GpioButton;
 

@@ -152,6 +152,21 @@ typedef struct
 }SPI_RegDef_t;
 
 
+// I2C
+typedef struct
+{
+	__vo uint32_t CR1;
+	__vo uint32_t CR2;
+	__vo uint32_t OAR1;
+	__vo uint32_t OAR2;
+	__vo uint32_t DR;
+	__vo uint32_t SR1;
+	__vo uint32_t SR2;
+	__vo uint32_t CCR;
+	__vo uint32_t TRISE;
+}I2C_RegDef_t;
+
+
 //Peripheral Definitions
 
 
@@ -169,10 +184,19 @@ typedef struct
 #define EXTI  ((EXTI_RegDef_t *	)EXTI_BASEADDR)
 #define AFIO  ((AFIO_RegDef_t * )AFIO_BASEADDR)
 #define SPI1  ((SPI_RegDef_t *) SPI1_BASEADDR)
+
+
+//APB1 port addresses
 #define SPI2  ((SPI_RegDef_t *) SPI2_BASEADDR)
 #define SPI3  ((SPI_RegDef_t *) SPI3_BASEADDR)
+#define I2C1  ((I2C_RegDef_t *) I2C1_BASEADDR)
+#define I2C2  ((I2C_RegDef_t *)	I2C2_BASEADDR)
+
+
+
 
 //Clock Enable and Disable
+//Enable
 #define AFIO_PCLK_EN()		(RCC->APB2ENR |= (1 << 0))
 #define GPIOA_PCLK_EN()		(RCC->APB2ENR |= (1 << 2))
 #define GPIOB_PCLK_EN()		(RCC->APB2ENR |= (1 << 3))
@@ -184,7 +208,13 @@ typedef struct
 #define SPI1_PCLK_EN()		(RCC->APB2ENR |= (1 << 12))
 #define SPI2_PCLK_EN()		(RCC->APB1ENR |= (1 << 14))
 #define SPI3_PCLK_EN()		(RCC->APB1ENR |= (1 << 15))
+#define I2C1_PCLK_EN()		(RCC->APB1ENR |= (1 << 21))
+#define I2C2_PCLK_EN()		(RCC->APB1ENR |= (1 << 22))
 
+
+
+
+//Disable
 #define AFIO_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 0))
 #define GPIOA_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 2))
 #define GPIOB_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 3))
@@ -196,6 +226,9 @@ typedef struct
 #define SPI1_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 12))
 #define SPI2_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 14))
 #define SPI3_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 15))
+#define I2C1_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 21))
+#define I2C2_PCLK_DI()		(RCC->APB1ENR &= ~(1 << 22))
+
 
 
 // GPIO REGISTER RESET MACROS
@@ -213,6 +246,13 @@ typedef struct
 #define SPI2_REG_RESET()	do {(RCC->APB1RSTR |=  (1 << 14)); (RCC->APB1RSTR &= ~(1 << 14));} while (0)
 #define SPI3_REG_RESET()	do {(RCC->APB1RSTR |=  (1 << 15)); (RCC->APB1RSTR &= ~(1 << 15));} while (0)
 
+
+// I2C Register Reset
+#define I2C1_REG_RESET()	do {(RCC->APB1RSTR |=  (1 << 21)); (RCC->APB1RSTR &= ~(1 << 21));} while (0)
+#define I2C2_REG_RESET()	do {(RCC->APB1RSTR |=  (1 << 22)); (RCC->APB1RSTR &= ~(1 << 22));} while (0)
+
+
+
 // IRQ Numbers
 #define IRQ_NO_EXTI0			6
 #define IRQ_NO_EXTI1			7
@@ -224,6 +264,13 @@ typedef struct
 #define IRQ_NO_SPI1				35
 #define IRQ_NO_SPI2				36
 #define IRQ_NO_SPI3				51
+#define IRQ_NO_I2C1_EV			31
+#define IRQ_NO_I2C1_ER			32
+#define IRQ_NO_I2C2_EV			33
+#define IRQ_NO_I2C2_ER			34
+
+
+
 
 //IRQ Priorities
 #define NVIC_IRQ_PRIO0		0
@@ -290,11 +337,56 @@ typedef struct
 #define SPI_SR_MODF				5
 #define SPI_SR_OVR				6
 #define SPI_SR_BSY				7
-#define SPI_SR_FRE
+
+
+/************* END SPI BITS **************/
+
+
+// I2C BIT Definitions
+//CR1  bits
+#define I2C_CR1_PE				0
+#define I2C_CR1_NOSTRETCH		7
+#define I2C_CR1_START			8
+#define I2C_CR1_STOP			9
+#define I2C_CR1_ACK				10
+#define I2C_CR1_SWRST			15
+
+
+//CR2 bits
+#define I2C_CR2_FREQ			0
+#define I2C_CR2_ITERREN			8
+#define I2C_CR2_ITEVEN			9
+#define I2C_CR2_ITBUFEN			10
+
+//SR1
+#define I2C_SR1_SB						0
+#define I2C_SR1_ADDR					1
+#define I2C_SR1_BTF						2
+#define I2C_SR1_ADD10					3
+#define I2C_SR1_STOPF					4
+#define I2C_SR1_RXNE					6
+#define I2C_SR1_TXE						7
+#define I2C_SR1_BERR					8
+#define I2C_SR1_ARLO					9
+#define I2C_SR1_AF						10
+#define I2C_SR1_OVR						11
+#define I2C_SR1_TIMEOUT					14
+
+
+//SR2
+#define I2C_SR2_MSL						0
+#define I2C_SR2_BUSY					1
+#define I2C_SR2_TRA						2
+#define I2C_SR2_GENCALL					4
+#define I2C_SR2_DUALF					7
+
+
+/***** END I2C Bits *******************/
 
 
 #include "stm32f103xx_gpio.h"
 #include "stm32f103xx_spi.h"
+#include "stm32f103xx_i2c.h"
 
 
 
