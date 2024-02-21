@@ -8,6 +8,9 @@
 #ifndef INC_STM32F103XX_SPI_H_
 #define INC_STM32F103XX_SPI_H_
 
+#include "stm32f1xx.h"
+
+
 
 // COnfigurable items for SPIx
 typedef struct
