@@ -387,6 +387,7 @@ typedef struct
 #include "stm32f103xx_gpio.h"
 #include "stm32f103xx_spi.h"
 #include "stm32f103xx_i2c.h"
+#include "ssd1306.h"
 
 
 

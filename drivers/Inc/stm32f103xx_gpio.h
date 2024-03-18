@@ -54,14 +54,21 @@ void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority);
 #define GPIO_MODE_IN_AN 	0
 #define GPIO_MODE_IN_FP 	1
 #define GPIO_MODE_IN_PUPD	2
-#define GPIO_MODE_ALTFN		3
-#define GPIO_MODE_IT_FT  	4
-#define GPIO_MODE_IT_RT  	5
-#define GPIO_MODE_IT_RFT  	6
+#define GPIO_MODE_ALTFN_OD	3
+#define GPIO_MODE_ALTFN_PP	4
+#define GPIO_MODE_IT_FT  	5
+#define GPIO_MODE_IT_RT  	6
+#define GPIO_MODE_IT_RFT  	7
 
 // GPIO OUTPUT TYPES MACROS
 #define GPIO_MODE_OUT_PP 	0
 #define GPIO_MODE_OUT_OD 	1
+
+// GPIO ALTFN MACROS
+#define GPIO_ALTFN_PP 		2
+#define GPIO_ALTFN_OD 		3
+
+
 
 //DIRECTION & SPEED MACROS
 #define GPIO_DIR_IN				0

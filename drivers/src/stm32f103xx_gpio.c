@@ -94,12 +94,19 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
 	}
 
+	//TODO
+	/*Excellent use case for Error handling we should throw if we are in input mode*/
 	// Handle Alternate function mode, we will need this for interrupts
-	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN) {
-		//TODO
+	if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN_OD) {
 
+		temp_reg_setting = (GPIO_ALTFN_OD << (2 + (4 * pin_port_pos)));
+
+	} else if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN_PP) {
+		temp_reg_setting = (GPIO_ALTFN_PP << (2 + (4 * pin_port_pos)));
 
 	}
+
+
 
 
 	// set direction and speed of pin
