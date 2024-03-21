@@ -17,90 +17,65 @@
  */
 
 #include "stm32f1xx.h"
+#include "string.h"
 
-
-void delay(void){
-	for(uint32_t i = 0; i < 500000/2; i ++);
-}
-
-
-//SPI2 (doesnt need AFIO remap)
-//PB15 SPI2_MOSI
-//pb14 SPI2_MISO
-//pb13 SPI2_SCK
-//pb14 SPI2_NSS
-
-void SPI_GPIOINITS() {
-	// Initialize GPIO pins for SPI (outputmode, no pupd, fast speed) // no altfn for
-	GPIO_Handle_t SPIPins;
-
-	SPIPins.pGPIOx = GPIOB;
-
-	SPIPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT_OD;
-	SPIPins.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_OUT_FAST;
-
-	//MOSI
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_15;
-	GPIO_Init(&SPIPins);
-
-	//MISO
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_14;
-	GPIO_Init(&SPIPins);
-
-	//SCK
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
-	GPIO_Init(&SPIPins);
-
-	//NSS
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
-	GPIO_Init(&SPIPins);
-
-}
-
-
- void SPI2_Init(){
-	 SPI_Handle_t SPI2Handle;
-
-	 SPI2Handle.pSPIx = SPI2;
-	 SPI2Handle.SPIConfig.SPI_BUSConfig = SPI_BUS_CONFIG_FD;
-	 SPI2Handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_SLAVE;
-	 SPI2Handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV4;
-	 SPI2Handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
-	 SPI2Handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
-	 SPI2Handle.SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
-	 SPI2Handle.SPIConfig.SPI_SSM = SPI_SSM_DI;
-
-	SPI_Init(&SPI2Handle);
- }
 
 int main(void){
-	//Init SPI2
-	SPI_GPIOINITS();
-	SPI2_Init();
-	SPI_PeripheralControl(SPI2, ENABLE);
-
 	GPIO_Handle_t  GpioLed,GpioButton;
 
-	// lets make a handler
+	//Enable the clock for port C
+	GPIO_PCLK_CTRL(GPIOC, ENABLE);
+
+	// lets make a handler for LED
 	GpioLed.pGPIOx = GPIOC;
 	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_13;
 	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT_PP;
 	GpioLed.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_OUT_MEDIUM;
 
-	// lets make a handler
+	// lets make a handler for External Button
 	GpioButton.pGPIOx = GPIOB;
 	GpioButton.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_5;
 	GpioButton.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_FT;
 	GpioButton.GPIO_PinConfig.GPIO_PinDirection = GPIO_DIR_IN;
 
-	//Enable the clock for port C
-	GPIO_PCLK_CTRL(GPIOC, ENABLE);
-	GPIO_PCLK_CTRL(GPIOD, ENABLE);
+
+
 	//init the pin with the above handler
 	GPIO_Init(&GpioLed);
 	GPIO_Init(&GpioButton);
 	GPIO_IRQPriorityConfig(IRQ_NO_EXTI9_5, NVIC_IRQ_PRIO15);
 	GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
+
+	ssd1306_init();
+
+
+
+	ssd1306_drawPixel(44, 50, 1);
+	ssd1306_display();
+
+
+	delay();
+
+	ssd1306_drawPixel(60, 80, 1);
+	ssd1306_display();
+
+
+	delay();
+
+	for(int x=0; x < SSD1306_COLUMNS; x++) {
+		for(int y = 0; y < SSD1306_ROWS; y++){
+			ssd1306_drawPixel(x, y, 1);
+		}
+	}
+	ssd1306_display();
+
+
+	delay();
+
+	ssd1306_drawPixel(64, 32, 0);
+	ssd1306_display();
+
+
 
 
 	while(1);
