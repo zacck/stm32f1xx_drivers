@@ -389,6 +389,8 @@ typedef struct
 #include "stm32f103xx_i2c.h"
 #include "ssd1306.h"
 
+void delay(void);
+
 
 
 #endif /* INC_STM32F1XX_H_ */

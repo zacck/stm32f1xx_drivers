@@ -8,14 +8,7 @@
 #include "stm32f1xx.h"
 
 // Simple video RAM
-static uint8_t ssd1306_vram[SSD1306_ROWS/8][SSD1306_COLUMNS] = {0};
-
-
-void delay(void) {
-	for (uint32_t i = 0; i < 250000 / 2; i++)
-		;
-}
-
+static uint8_t ssd1306_vram[SSD1306_ROWS / 8][SSD1306_COLUMNS] = { 0 };
 
 //SPI2 (doesnt need AFIO remap)
 //PB15 SPI2_MOSI
@@ -55,9 +48,8 @@ void SPI2_Init() {
 
 	SPI2Handle.pSPIx = SPI2;
 	SPI2Handle.SPIConfig.SPI_BUSConfig = SPI_BUS_CONFIG_FD;
-	SPI2Handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER
-	;
-	SPI2Handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV128;
+	SPI2Handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
+	SPI2Handle.SPIConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV64;
 	SPI2Handle.SPIConfig.SPI_DFF = SPI_DFF_8BITS;
 	SPI2Handle.SPIConfig.SPI_CPOL = SPI_CPOL_HIGH;
 	SPI2Handle.SPIConfig.SPI_CPHA = SPI_CPHA_HIGH;
@@ -108,31 +100,40 @@ void ssd1306_init(void) {
 	GPIO_WriteToOutputPin(GPIOB, GPIO_PIN_NO_8, RESET);
 	delay();
 
-	uint8_t initInstructions[] = {
-	SSD1306_SETDISPLAY_OFF, // display off
-			SSD1306_SETDISPLAYCLOCKDIV, 0x80, // set clock command and param
-			SSD1306_SETMULTIPLEX, (SSD1306_ROWS - 1), // number of display rows in multiplexer
-			SSD1306_VERTICALOFFSET, 0, //no vertical display offset
-			SSD1306_SETSTARTLINE | 0x00, // RAM start line 0
-			SSD1306_SETCHARGEPUMP, 0x14, // charge pump on
-			SSD1306_SETADDRESSMODE, 0x00, // horizontal addressmode
-			SSD1306_COLSCAN_DESCENDING, // flip columns
-			SSD1306_COMSCAN_ASCENDING, //dont flip pages
-			SSD1306_SETCOMPINS, 0x02, // set comm pins sequential mode
-			SSD1306_SETCONTRAST, 0x00, //set minimal contrast
-			SSD1306_SETPRECHARGE, 0xF1, //set precharge period
-			SSD1306_SETVCOMLEVEL, 0x40, // set vcom deselect level
-			SSD1306_ENTIREDISPLAY_OFF, //use RAM contents for display
-			SSD1306_SETINVERT_OFF, //set inversion off
-			SSD1306_SCROLL_DEACTIVATE, //deactivate scroll
-			SSD1306_SETDISPLAY_ON, //set display on
+	uint8_t initInstructions[] = { SSD1306_CMD_START,          // start commands
+			SSD1306_SETDISPLAY_OFF,         // turn off display
+			SSD1306_SETDISPLAYCLOCKDIV,     // set clock:
+			0x80,                           //   Fosc = 8, divide ratio = 0+1
+			SSD1306_SETMULTIPLEX,           // display multiplexer:
+			(SSD1306_ROWS - 1),             //   number of display rows
+			SSD1306_VERTICALOFFSET,         // display vertical offset:
+			0,                              //   no offset
+			SSD1306_SETSTARTLINE | 0x00,    // RAM start line 0
+			SSD1306_SETCHARGEPUMP,          // charge pump:
+			0x14,                           //   charge pump ON (0x10 for OFF)
+			SSD1306_SETADDRESSMODE,         // addressing mode:
+			0x00,                           //   horizontal mode
+			SSD1306_COLSCAN_DESCENDING,     // flip columns
+			SSD1306_COMSCAN_ASCENDING,      // don't flip rows (pages)
+			SSD1306_SETCOMPINS,             // set COM pins
+			0x12,                           //   sequential pin mode
+			SSD1306_SETCONTRAST,            // set contrast
+			0xCF,                           //   minimal contrast
+			SSD1306_SETPRECHARGE,           // set precharge period
+			0xF1,                           //   phase1 = 15, phase2 = 1
+			SSD1306_SETVCOMLEVEL,           // set VCOMH deselect level
+			0x40,                           //   ????? (0,2,3)
+			SSD1306_ENTIREDISPLAY_OFF,      // use RAM contents for display
+			SSD1306_SETINVERT_OFF,          // no inversion
+			SSD1306_SCROLL_DEACTIVATE,      // no scrolling
+			SSD1306_SETDISPLAY_ON,          // turn on display (normal mode)
 			};
-	for (int i = 0; i < sizeof(initInstructions) / sizeof(initInstructions[0]);
-			i++) {
-		SPI_SendData(SPI2, &initInstructions[i], 1);
-	}
-}
+	int inst_size = (sizeof(initInstructions) / sizeof(initInstructions[0]));
 
+	SPI_SendData(SPI2, initInstructions, inst_size);
+
+	delay();
+}
 
 /*
  * ! Draw a single pixel to the display
@@ -152,28 +153,33 @@ uint16_t ssd1306_drawPixel(uint16_t x, uint16_t y, uint8_t value) {
 	if (y >= SSD1306_ROWS)
 		return 2;
 
-	const uint8_t page = y >> 3;
-	uint8_t configMsg[] = {
-			SSD1306_SETPAGERANGE, page, page, SSD1306_SETCOLRANGE, x, x };
-
-	for (int n = 0; n < sizeof(configMsg) / sizeof(configMsg[0]); n++) {
-		SPI_SendData(SPI2, &configMsg[n], 1);
-	}
-
 	//write to vram
-	if(value) ssd1306_vram[page][x] |= 0x01 << (y & 0x07);
-	else ssd1306_vram[page][x] &= ~(0x01 << (y & 0x07));
+	if (value)
+		ssd1306_vram[y/8][x] |= 0x01 << (y & 0x07);
+	else
+		ssd1306_vram[y/8][x] &= ~(0x01 << (y & 0x07));
+
+	return 0;
+}
+
+
+
+void ssd1306_display(void) {
+	//const uint8_t page = y >> 3;
+	uint8_t configMsg[] = { SSD1306_CMD_START,
+	SSD1306_SETPAGERANGE, 0x0, 0xFF,
+			SSD1306_SETCOLRANGE, 0x0, 0x7F };
+	SPI_SendData(SPI2, configMsg, sizeof configMsg);
 
 	//Enter Data mode
 	GPIO_WriteToOutputPin(GPIOB, GPIO_PIN_NO_8, SET);
 	delay();
-	uint8_t dataMsg[] = { ssd1306_vram[page][x]};
+	//uint8_t dataMsg[] = { SSD1306_DATA_START, ssd1306_vram};
 
-	//for (int n = 0; n < sizeof(dataMsg) / sizeof(dataMsg[0]); n++) {
-	SPI_SendData(SPI2, dataMsg, sizeof(dataMsg));
-	//}
+	SPI_SendData(SPI2, *ssd1306_vram, sizeof(ssd1306_vram));
 
-	return 0;
 }
+
+
 
 
