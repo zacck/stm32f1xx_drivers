@@ -21,6 +21,8 @@
 #define SSD1306_PAGE_STOP   ((SSD1306_ROWS / 8) - 1)
 #define SSD1306_COL_START   0
 #define SSD1306_COL_STOP    (SSD1306_COLUMNS - 1)
+//video ram size
+#define VRAM_SIZE			SSD1306_COLUMNS * 8
 // SSD1306 Commands - see Datasheet
 #define SSD1306_CMD_START   0x00    // indicates following bytes are commands
 #define SSD1306_DATA_START  0x40
@@ -67,6 +69,7 @@
 void ssd1306_init(void);
 uint16_t ssd1306_drawPixel(uint16_t x, uint16_t y, uint8_t value);
 void ssd1306_display(void);
+void ssd1306_clearDisplay(void);
 
 
 

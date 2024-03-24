@@ -6,9 +6,13 @@
  */
 
 #include "stm32f1xx.h"
+#include "string.h"
 
 // Simple video RAM
-static uint8_t ssd1306_vram[SSD1306_ROWS / 8][SSD1306_COLUMNS] = { 0 };
+//static uint8_t ssd1306_vram[SSD1306_ROWS / 8][SSD1306_COLUMNS] = { 0 };
+static uint8_t ssd1306_vram[VRAM_SIZE];
+unsigned int _pIndex;
+
 
 //SPI2 (doesnt need AFIO remap)
 //PB15 SPI2_MOSI
@@ -153,17 +157,31 @@ uint16_t ssd1306_drawPixel(uint16_t x, uint16_t y, uint8_t value) {
 	if (y >= SSD1306_ROWS)
 		return 2;
 
+	_pIndex = x + ((y >> 3) << 7);
 	//write to vram
 	if (value)
-		ssd1306_vram[y/8][x] |= 0x01 << (y & 0x07);
+		ssd1306_vram[_pIndex++] |= 0x01 << (y & 0x07);
 	else
-		ssd1306_vram[y/8][x] &= ~(0x01 << (y & 0x07));
+		ssd1306_vram[_pIndex++] &= ~(0x01 << (y & 0x07));
 
 	return 0;
 }
 
+/*
+ * Clear the display
+ * */
+
+void ssd1306_clearDisplay(void){
+	memset(ssd1306_vram, 0, sizeof ssd1306_vram);
+	ssd1306_display();
+}
 
 
+
+
+/*
+ * Writes the content of the ram to the screen
+ * */
 void ssd1306_display(void) {
 	//const uint8_t page = y >> 3;
 	uint8_t configMsg[] = { SSD1306_CMD_START,
@@ -174,9 +192,8 @@ void ssd1306_display(void) {
 	//Enter Data mode
 	GPIO_WriteToOutputPin(GPIOB, GPIO_PIN_NO_8, SET);
 	delay();
-	//uint8_t dataMsg[] = { SSD1306_DATA_START, ssd1306_vram};
 
-	SPI_SendData(SPI2, *ssd1306_vram, sizeof(ssd1306_vram));
+	SPI_SendData(SPI2, ssd1306_vram, sizeof(ssd1306_vram));
 
 }
 

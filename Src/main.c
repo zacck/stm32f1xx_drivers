@@ -71,9 +71,11 @@ int main(void){
 
 
 	delay();
+	delay();
 
 	ssd1306_drawPixel(64, 32, 0);
 	ssd1306_display();
+	//ssd1306_clearDisplay();
 
 
 
