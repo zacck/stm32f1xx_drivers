@@ -46,7 +46,7 @@ int main(void){
 	GPIO_IRQPriorityConfig(IRQ_NO_EXTI9_5, NVIC_IRQ_PRIO15);
 	GPIO_IRQConfig(IRQ_NO_EXTI9_5, ENABLE);
 
-	ssd1306_init();
+	SSD1306_Init();
 
 
 
@@ -75,7 +75,15 @@ int main(void){
 
 	ssd1306_drawPixel(64, 32, 0);
 	ssd1306_display();
-	//ssd1306_clearDisplay();
+	ssd1306_clearDisplay();
+	ssd1306_display();
+	ssd1306_setCursorPosition(2, 0);
+	ssd1306_display();
+	ssd1306_drawChar('0');
+	ssd1306_display();
+	ssd1306_clearDisplay();
+	SSD1306_DrawString("Broken Offset");
+	ssd1306_display();
 
 
 

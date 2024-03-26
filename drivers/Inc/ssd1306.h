@@ -14,18 +14,20 @@
  * SSD1306 Hardware *
  ********************/
 // Hardware description
-#define SSD1306_I2C_ADDRESS 0x3C    // default I2C address
-#define SSD1306_ROWS        64      // number of rows on display
-#define SSD1306_COLUMNS     128     // number of columns on display
-#define SSD1306_PAGE_START  0
-#define SSD1306_PAGE_STOP   ((SSD1306_ROWS / 8) - 1)
-#define SSD1306_COL_START   0
-#define SSD1306_COL_STOP    (SSD1306_COLUMNS - 1)
+#define SSD1306_I2C_ADDRESS 		0x3C    // default I2C address
+#define SSD1306_ROWS        		64      // number of rows on display
+#define SSD1306_COLUMNS     		128     // number of columns on display
+#define SSD1306_END_COLUMN_ADDR		127
+#define SSD1306_END_PAGE_ADDR		3
+#define SSD1306_PAGE_START  		0
+#define SSD1306_PAGE_STOP   		((SSD1306_ROWS / 8) - 1)
+#define SSD1306_COL_START   		0
+#define SSD1306_COL_STOP    		(SSD1306_COLUMNS - 1)
 //video ram size
-#define VRAM_SIZE			SSD1306_COLUMNS * 8
+#define VRAM_SIZE					SSD1306_COLUMNS * 8
 // SSD1306 Commands - see Datasheet
-#define SSD1306_CMD_START   0x00    // indicates following bytes are commands
-#define SSD1306_DATA_START  0x40
+#define SSD1306_CMD_START   		0x00    // indicates following bytes are commands
+#define SSD1306_DATA_START  		0x40
 // Fundamental Command Table (p. 28)
 #define SSD1306_SETCONTRAST         0x81    // double-byte command to set contrast (1-256)
 #define SSD1306_ENTIREDISPLAY_ON    0xA5    // set entire display on
@@ -66,10 +68,14 @@
 // Charge Pump Commands (p. 62)
 #define SSD1306_SETCHARGEPUMP       0x8D    // enable / disable charge pump
 // function definitions
-void ssd1306_init(void);
+void SSD1306_Init(void);
 uint16_t ssd1306_drawPixel(uint16_t x, uint16_t y, uint8_t value);
 void ssd1306_display(void);
 void ssd1306_clearDisplay(void);
+uint8_t ssd1306_updatePosition(void);
+uint8_t ssd1306_drawChar(char character);
+void ssd1306_setCursorPosition(uint8_t x, uint8_t y);
+void SSD1306_DrawString(char *str);
 
 
 

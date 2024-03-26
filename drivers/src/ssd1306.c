@@ -7,11 +7,13 @@
 
 #include "stm32f1xx.h"
 #include "string.h"
+#include "font.h"
 
 // Simple video RAM
 //static uint8_t ssd1306_vram[SSD1306_ROWS / 8][SSD1306_COLUMNS] = { 0 };
 static uint8_t ssd1306_vram[VRAM_SIZE];
 unsigned int _pIndex;
+
 
 
 //SPI2 (doesnt need AFIO remap)
@@ -67,7 +69,7 @@ void SPI2_Init() {
  * Initialize the SSD1306 display module
  *
  */
-void ssd1306_init(void) {
+void SSD1306_Init(void) {
 	GPIO_Handle_t ScreenReset, ScreenDCToggle;
 	GPIO_PCLK_CTRL(GPIOB, ENABLE);
 	//Handle GPIOS for Screen
@@ -109,24 +111,24 @@ void ssd1306_init(void) {
 			SSD1306_SETDISPLAYCLOCKDIV,     // set clock:
 			0x80,                           //   Fosc = 8, divide ratio = 0+1
 			SSD1306_SETMULTIPLEX,           // display multiplexer:
-			(SSD1306_ROWS - 1),             //   number of display rows
+			0x3F,             				//   number of display rows
 			SSD1306_VERTICALOFFSET,         // display vertical offset:
-			0,                              //   no offset
-			SSD1306_SETSTARTLINE | 0x00,    // RAM start line 0
+			1, 0x00,                        //   no offset
+			SSD1306_SETSTARTLINE, 0,    	// RAM start line 0
 			SSD1306_SETCHARGEPUMP,          // charge pump:
 			0x14,                           //   charge pump ON (0x10 for OFF)
 			SSD1306_SETADDRESSMODE,         // addressing mode:
 			0x00,                           //   horizontal mode
-			SSD1306_COLSCAN_DESCENDING,     // flip columns
-			SSD1306_COMSCAN_ASCENDING,      // don't flip rows (pages)
+			SSD1306_COLSCAN_DESCENDING, 0,    // flip columns
+			SSD1306_COMSCAN_DESCENDING, 0,     // don't flip rows (pages)
 			SSD1306_SETCOMPINS,             // set COM pins
 			0x12,                           //   sequential pin mode
 			SSD1306_SETCONTRAST,            // set contrast
-			0xCF,                           //   minimal contrast
+			1, 0x7F,                           //   minimal contrast
 			SSD1306_SETPRECHARGE,           // set precharge period
 			0xF1,                           //   phase1 = 15, phase2 = 1
 			SSD1306_SETVCOMLEVEL,           // set VCOMH deselect level
-			0x40,                           //   ????? (0,2,3)
+			0x20,                           //   ????? (0,2,3)
 			SSD1306_ENTIREDISPLAY_OFF,      // use RAM contents for display
 			SSD1306_SETINVERT_OFF,          // no inversion
 			SSD1306_SCROLL_DEACTIVATE,      // no scrolling
@@ -166,6 +168,68 @@ uint16_t ssd1306_drawPixel(uint16_t x, uint16_t y, uint8_t value) {
 
 	return 0;
 }
+
+/*
+ * Update the position this is to ensure that character is not divided at the end of a row
+
+ * ! \return 0 if successful, error code if failed:
+ * !         1: x value out of range
+ * !         2: y value out of range
+ */
+uint8_t ssd1306_updatePosition(void) {
+
+	uint8_t y = _pIndex >> 7;
+	uint8_t x = _pIndex - (y << 7);
+	uint8_t x_new = x + CHARS_COLS_LENGTH + 1;
+
+	if(x_new > SSD1306_END_COLUMN_ADDR){			//check position
+		if(y > SSD1306_END_PAGE_ADDR){				//if more than allowed pages
+			return 2;								// return  out of range for y
+		} else if(y < (SSD1306_END_PAGE_ADDR-1)) {	// if x reacges the end but still in page range
+			_pIndex = ((++y) << 7);					// update
+		}
+	}
+
+	return 0;
+}
+
+
+void SSD1306_DrawString(char *str){
+	int i = 0;
+	while(str[i] != '\0'){
+		ssd1306_drawChar(str[i++]);
+	}
+}
+
+
+/*
+ * Draws a given character on the screen
+ * param character: character to draw
+ *
+ */
+uint8_t ssd1306_drawChar(char character){
+	uint8_t i = 0;
+
+	if(ssd1306_updatePosition() ==  2 /*Y range error*/){
+			return 2;
+	}
+	while(i < CHARS_COLS_LENGTH) {
+		ssd1306_vram[_pIndex++] = *(&FONTS[character-32][i++]);
+	}
+	_pIndex++;
+
+	return 0;
+}
+
+/*
+ * Sets the cursor positioon to the x y coordinates
+ *
+ *
+ */
+void ssd1306_setCursorPosition(uint8_t x, uint8_t y){
+	_pIndex = x + (y << 7);
+}
+
 
 /*
  * Clear the display
