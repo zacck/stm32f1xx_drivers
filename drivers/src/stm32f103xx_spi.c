@@ -5,7 +5,7 @@
  *      Author: zaccko
  */
 
-#include "stm32f103xx_gpio.h"
+#include "stm32f1xx.h"
 
 
 static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle);
@@ -141,9 +141,9 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
 
 
 		//check DFF
-		if((pSPIx->CR1 && (1  << SPI_CR1_DFF))){
+		if((pSPIx->CR1 & (1  << SPI_CR1_DFF))){
 			//16bit DFF
-			pSPIx->DR =* ((uint16_t*)pTxBuffer);
+			pSPIx->DR = *((uint16_t*)pTxBuffer);
 			//Decrease len twice since we picked a half word(2 bytes)
 			Len--;
 			Len--;
@@ -313,6 +313,22 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi){
 			pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
 		}
 }
+
+/***
+ * @fn SPI_SSOEConfig
+ *
+ * @params[pSPIx] the address of the peripheral in use
+ * @params[EnorDi] enable or disable param
+ * @return void
+ */
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi){
+	if(EnorDi == ENABLE) {
+		pSPIx->CR2 |= (1 << SPI_CR2_SSOE);
+	} else {
+		pSPIx->CR2 &= ~(1 << SPI_CR2_SSOE);
+	}
+}
+
 
 //IRQ config and ISR handling
 /******

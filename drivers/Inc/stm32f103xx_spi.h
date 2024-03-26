@@ -8,6 +8,9 @@
 #ifndef INC_STM32F103XX_SPI_H_
 #define INC_STM32F103XX_SPI_H_
 
+#include "stm32f1xx.h"
+
+
 
 // COnfigurable items for SPIx
 typedef struct
@@ -89,6 +92,10 @@ typedef struct
 #define SPI_SSM_EN		1
 #define SPI_SSM_DI		0
 
+//SPI First Bit Management
+#define SPI_MSBFIRST_MODE	0
+#define SPI_LSBFIRST_MODE 	1
+
 
 // Init and DeInit APIs
 void SPI_Init(SPI_Handle_t *pSPIHandle);
@@ -122,6 +129,7 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName);
 // MISc APIs
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 
 
 //application callback
